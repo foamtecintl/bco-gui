@@ -1,0 +1,25 @@
+{
+  "name": "bco-gui",
+  "version": "1.0.0",
+  "description": "Compare Barcode Outgoing",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foamtecintl/bco-gui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/foamtecintl/bco-gui/issues"
+  },
+  "homepage": "https://github.com/foamtecintl/bco-gui#readme",
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "electron": "^2.0.2",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1"
+  }
+}

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Canon barcode compare</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div id="lockProgram">
+        <br>
+        <div class="row">
+          <div class="col-sm-12" align="center">
+            <img src="./lock.jpg" class="img-responsive" alt="Responsive image">
+            <label>please contact Team Leader Unlock</label>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-sm-12" align="center">
+            <img src="./foamtec.jpg" class="img-responsive" alt="Responsive image">
+          </div>
+        </div>
+      </div>
+      <div id="masterBarcodeDiv" class="hidden">
+        <div class="row">
+          <div class="col-sm-12" align="center">
+            <h1>Master Barcode</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <form>
+              <div class="form-group">
+                <input class="form-control input-lg" id="masterBarcode" type="text" autofocus="autofocus">
+              </div>
+            </form>
+          </div>
+        </div>
+        <br><br>
+        <div class="row">
+          <div class="col-sm-12" align="center">
+            <img src="./foamtec.jpg" class="img-responsive" alt="Responsive image">
+          </div>
+        </div>
+      </div>
+      <div id="compareBarcodeDiv" class="hidden">
+        <div class="row">
+          <div class="col-sm-12" align="center">
+            <h1>Compare Barcode</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-7">
+              <div class="panel panel-primary">
+                <div class="panel-heading" align="center">
+                  <h3 class="panel-title">Part Number Master</h3>
+                </div>
+                <div class="panel-body" align="center">
+                  <h3 id="partMaster"></h3>
+                </div>
+              </div>
+          </div>
+          <div class="col-sm-5">
+            <div class="panel panel-info">
+              <div class="panel-heading" align="center">
+                <h3 class="panel-title">QTY Master</h3>
+              </div>
+              <div class="panel-body" align="center">
+                <h3 id="masterQty"></h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <form>
+              <div class="form-group">
+                <input class="form-control input-lg" id="compareBarcode" type="text">
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row hidden" id="dataCompare">
+          <div class="col-sm-7">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="panel panel-info">
+                  <div class="panel-body">
+                    <h4>Part No : <label id="partCompare"></label></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="panel panel-info">
+                  <div class="panel-body">
+                    <h4>QTY. : <label id="qtyCompare"></label></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="panel panel-danger">
+                  <div class="panel-body" id="colorDiv" style="background-color:#f1c40f">
+                    <h4>Total qty balance : <label id="totalQty"></label></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-5">
+            <div class="row">
+              <div class="col-sm-12" align="center">
+                <img src="./pass.png" id="imgPass" class="img-responsive hidden" alt="Responsive image" height="260" width="260">
+                <img src="./fail.png" id="imgFail" class="img-responsive hidden" alt="Responsive image" height="260" width="260">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12" align="center">
+            <form>
+              <button class="btn btn-primary btn-lg">Scan Master Barcode</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        var partMaster = '';
+        var batchMasterNo = '';
+        var masterQty = 0;
+        var masterQtyStart = 0;
+        
+        $('#masterBarcode').keypress(function(e) {
+          if(e.which == 13) {
+            barcodeMaster = $('#masterBarcode').val();
+            if (barcodeMaster.length > 44) {
+              partMaster = barcodeMaster.substring(0, 15);
+              batchMasterNo = barcodeMaster.substring(15, 25);
+              masterQty = parseInt(barcodeMaster.substring(35, barcodeMaster.length));
+              masterQtyStart = masterQty;
+              $('#partMaster').text(partMaster);
+              $('#masterQty').text(masterQty);
+              $('#masterBarcodeDiv').addClass('hidden');
+              $('#compareBarcodeDiv').removeClass('hidden');
+              $('#compareBarcode').focus();
+              return false;
+            } else {
+              alert('barcode syntax error')
+              location.reload();
+            }
+          }
+        });
+
+        $('#compareBarcode').keypress(function(e) {
+          if(e.which == 13) {
+            var barcodeCompare = $('#compareBarcode').val();
+            if (barcodeCompare.length > 44) {
+              var partCompare = barcodeCompare.substring(0, 15);
+              var batchCompareNo = barcodeCompare.substring(15, 25);
+              var qtyCompare = parseInt(barcodeCompare.substring(35, barcodeCompare.length));
+
+              if (partMaster == partCompare) {
+                masterQty = masterQty - qtyCompare;
+
+                var formData = {
+                  "partMaster": partMaster,
+                  "qtyMaster": masterQtyStart+'',
+                  "partCompare": partCompare,
+                  "batchCompare": batchCompareNo,
+                  "qtyCompare": qtyCompare+'',
+                  "qtyBalancey": masterQty+''
+                }
+
+                $.ajax({
+                  type: "POST",
+                  url: "http://localhost:8090/save",
+                  processData: false,
+                  async: true,
+                  data: JSON.stringify(formData),
+                  success: function(data){
+                    console.log(data["status"]);
+                  },
+                  error: function(data){
+                    alert("save error.")
+                  }
+                });
+
+                if (masterQty == 0) {
+                  $('#colorDiv').css("background-color","#2ecc71");
+                }
+                if (masterQty < 0) {
+                  $('#colorDiv').css("background-color","#c0392b");
+                }
+                
+                $('#partCompare').text(partCompare);
+                $('#qtyCompare').text(qtyCompare);
+                $('#totalQty').text(masterQty);
+                $('#imgFail').addClass('hidden');
+                $('#imgPass').removeClass('hidden');
+                $('#compareBarcode').val('');
+                $('#dataCompare').removeClass('hidden');
+                return false;
+              } else {
+                $('#partCompare').text(partCompare);
+                $('#qtyCompare').text(qtyCompare);
+                $('#totalQty').text(masterQty);
+                $('#imgPass').addClass('hidden');
+                $('#imgFail').removeClass('hidden');
+                $('#compareBarcode').val('');
+                $('#dataCompare').removeClass('hidden');
+                return false;
+              }
+            } else {
+              alert('barcode syntax error')
+              $('#compareBarcode').val('');
+              return false;
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
