@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="container">
-      <div id="lockProgram">
+      <div id="lockProgram" class="hidden">
         <br>
         <div class="row">
           <div class="col-sm-12" align="center">
@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div id="masterBarcodeDiv" class="hidden">
+      <div id="masterBarcodeDiv">
         <div class="row">
           <div class="col-sm-12" align="center">
             <h1>Master Barcode</h1>
@@ -138,6 +138,23 @@
         var batchMasterNo = '';
         var masterQty = 0;
         var masterQtyStart = 0;
+
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:8090/checkstatus",
+          processData: false,
+          async: true,
+          data: JSON.stringify({}),
+          success: function(data){
+            if(data["status"] != 'UNLOCK') {
+              $('#lockProgram').removeClass('hidden');
+              $('#masterBarcodeDiv').addClass('hidden');
+            }
+          },
+          error: function(data){
+            alert("error.")
+          }
+        });
         
         $('#masterBarcode').keypress(function(e) {
           if(e.which == 13) {
@@ -199,6 +216,20 @@
                 }
                 if (masterQty < 0) {
                   $('#colorDiv').css("background-color","#c0392b");
+                  $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8090/lock",
+                    processData: false,
+                    async: true,
+                    data: JSON.stringify({}),
+                    success: function(data){
+                      alert('Lock program');
+                      $('#compareBarcode').attr("disabled", 'disabled');
+                    },
+                    error: function(data){
+                      alert("error.")
+                    }
+                  });
                 }
                 
                 $('#partCompare').text(partCompare);
@@ -217,6 +248,20 @@
                 $('#imgFail').removeClass('hidden');
                 $('#compareBarcode').val('');
                 $('#dataCompare').removeClass('hidden');
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8090/lock",
+                    processData: false,
+                    async: true,
+                    data: JSON.stringify({}),
+                    success: function(data){
+                      alert('Lock program');
+                      $('#compareBarcode').attr("disabled", 'disabled');
+                    },
+                    error: function(data){
+                      alert("error.")
+                    }
+                  });
                 return false;
               }
             } else {

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Unlock</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <br>
+      <div class="row">
+        <div class="col-sm-12" id="divPassUnlock">
+          <form>
+            <div class="form-group">
+                <div class="input-group">
+                  <input type="text" id="passUnlock" class="form-control" placeholder="Password Unlock">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" id="btnUnlock" type="button">Unlock</button>
+                  </span>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-sm-12 hidden" id="divNewPass">
+            <form>
+              <div class="form-group">
+                  <div class="input-group">
+                    <input type="text" id="newPass" class="form-control" placeholder="New password">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" id="btnNewPass" type="button">Submit</button>
+                    </span>
+                  </div>
+              </div>
+            </form>
+          </div>
+      </div>
+    </div>
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('#btnUnlock').click(function() {
+          $.ajax({
+            type: "POST",
+            url: 'http://localhost:8090/checkstatus',
+            processData: false,
+            async: true,
+            data: JSON.stringify({}),
+            success: function(data){
+              if(data['passUnlock'] == $('#passUnlock').val()) {
+                $('#divPassUnlock').addClass('hidden')
+                $('#divNewPass').removeClass('hidden')
+              } else {
+                alert('Password fail')
+                $('#passUnlock').val('')
+              }
+            },
+            error: function(data){
+              alert('error.')
+            }
+          });
+        })
+
+        $('#btnNewPass').click(function() {
+          var formData = {
+            "newPass": $('#newPass').val()
+          }
+          $.ajax({
+            type: "POST",
+            url: 'http://localhost:8090/unlock',
+            processData: false,
+            async: true,
+            data: JSON.stringify(formData),
+            success: function(data){
+              $('#newPass').attr("disabled", 'disabled')
+              alert('OK')
+            },
+            error: function(data){
+              alert('error.')
+            }
+          });
+        })
+      });
+    </script>
+  </body>
+</html>

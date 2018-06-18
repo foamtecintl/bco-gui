@@ -10,7 +10,7 @@ function createMainWindow() {
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
-    slashes: true,
+    slashes: true
   }))
 
   mainWindow.setResizable(false)
@@ -32,6 +32,17 @@ function createMainWindow() {
   })
 }
 
+function createUnlockWindow() {
+  unlockWindow = new BrowserWindow({width: 300, height: 100})
+  unlockWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'unlock.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+  unlockWindow.setResizable(false)
+  unlockWindow.setFullScreenable(false)
+}
+
 const mainMenuTemplate = [
   {
     label: 'File',
@@ -39,7 +50,7 @@ const mainMenuTemplate = [
       {
         label: 'unlock',
         click() {
-          console.log('unlock')
+          createUnlockWindow()
         }
       }
     ]
